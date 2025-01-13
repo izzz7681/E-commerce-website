@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Store</title>
+    <style>
+        /* CSS styles */
+        
+         :root {
+            --primary-color: #D2B48C;
+            /* Brown */
+            --secondary-color: #F5F5DC;
+            /* Cream */
+            --background-color: #F5F5DC;
+            /* Cream */
+            --hover-color: #8B4513;
+            /* SaddleBrown */
+            --text-color: #8B4513;
+            /* SaddleBrown */
+            --border-color: rgba(210, 180, 140, 0.5);
+            /* Brown with transparency */
+            --border-primary: rgba(245, 245, 220, 0.8);
+            /* Cream with transparency */
+            --border-secondary: rgba(139, 69, 19, 0.2);
+            /* SaddleBrown with transparency */
+            --border-background: rgba(210, 180, 140, 0.1);
+            /* Brown with transparency */
+        }
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 1rem 0;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        nav button {
+            background: none;
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        nav button:hover {
+            background: var(--hover-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1));
+        }
+        
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-card-content {
+            padding: 1rem;
+        }
+        
+        .product-card button {
+            width: 100%;
+            padding: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .product-card button:hover {
+            background-position: right center;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.11);
+        }
+        
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+        
+        .cart-sidebar.active {
+            right: 0;
+        }
+        
+        .cart-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-items {
+            padding: 1rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+        
+        .cart-item:hover {
+            transform: translateX(5px);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1));
+        }
+        
+        .cart-total {
+            padding: 1rem;
+            font-weight: bold;
+            text-align: right;
+            color: var(--text-color);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(19, 0, 26, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(245, 246, 247, 0.9), rgba(255, 255, 255, 0.9));
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .close {
+            color: var(--text-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .close:hover {
+            color: var(--secondary-color);
+        }
+        
+        .profile-view {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .profile-view:hover {
+            transform: translateY(-5px);
+        }
+        
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .order-history {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-color);
+        }
+        
+        .order-history th,
+        .order-history td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+            transition: background-color 0.2s ease;
+        }
+        
+        .order-history th {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3));
+        }
+        
+        .order-history tr:hover td {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-container input,
+        .search-container select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        .search-container input:focus,
+        .search-container select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
+        
+        .search-container input {
+            flex: 1;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .quantity-controls button {
+            padding: 2px 8px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 25px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-controls button:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            transform: scale(1.1);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform-origin: bottom right;
+            animation: slideIn 0.5s ease-out, pulse 2s ease-in-out infinite, fadeOut 0.3s ease-out 2.7s forwards;
+        }
+        
+        .toast.error {
+            background: linear-gradient(45deg, #ff3366, #2600ff);
+        }
+        
+        .toast.warning {
+            background: linear-gradient(45deg, #ffcc00, #ff9900);
+        }
+        
+        .toast.info {
+            background: linear-gradient(45deg, var(--primary-color), #338bff);
+        }
+        
+        .wishlist-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--secondary-color);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .btn-info {
+            background: linear-gradient(45deg, var(--primary-color), #33c5ff);
+            color: var(--text-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff3366, #ff0066);
+            color: var(--text-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .product-details {
+            width: 80%;
+            max-width: 800px;
+            color: var(--text-color);
+        }
+        
+        .product-details-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            padding: 1rem;
+        }
+        
+        .stars {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        
+        .review {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            color: var(--text-color);
+        }
+        
+        .heart {
+            color: #ff3366;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <h1>E-commerce Store</h1>
+            <ul>
+                <li><button id="cartBtn">Cart (<span id="cartCount">0</span>)</button></li>
+                <li><button id="profileBtn" style="display: none;">Profile</button></li>
+                <li><button id="loginBtn">Login</button></li>
+                <li><button id="registerBtn">Register</button></li>
+                <li><button id="logoutBtn" style="display: none;">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div id="productsGrid" class="products-grid"></div>
+        <div id="profileView" class="profile-view" style="display: none;">
+            <div class="profile-header">
+                <h2>Your Profile</h2>
+                <button id="closeProfileBtn" style="
+                background: linear-gradient(45deg, var(--border-primary), var(--border-secondary));
+                color: white;
+                border: none;
+                border-radius: 100%;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;">Close</button>
+            </div>
+            <h3>Order History</h3>
+            <table class="order-history">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="orderHistoryBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <button id="closeCartBtn" style="
+                background: linear-gradient(45deg, var(--border-primary), var(--border-secondary));
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">&times;</button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-total">
+            Total: $<span id="cartTotal">0.00</span>
+        </div>
+        <button id="checkoutBtn" style="width: 100%; padding: 1rem; background-color: var(--hover-color); color: white; border: none; cursor: pointer;">Checkout</button>
+    </div>
+    <div id="authModal" class="modal">
+        <div class="modal-content" style="animation: fadeInScale 0.4s ease, floatEffect 3s ease-in-out infinite; background: linear-gradient(135deg, rgba(210, 180, 140, 0.927), #D2B48C); border-radius: 12px; box-shadow: 0 8px 32px #D2B48C; position: relative; overflow: hidden;">
+            <div class="modal-background" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center, transparent 0%, #ebd5b7 100%); animation: pulse 2s ease-in-out infinite;"></div>
+            <span class="close" style="color: var(--text-color); font-size: 1.8rem; transition: all 0.3s ease; cursor: pointer; position: absolute; right: 20px; top: 15px; z-index: 2; transform-origin: center; animation: rotateIn 0.5s ease;">&times;</span>
+            <h2 id="authTitle" style="color: var(--text-color); font-size: 2.2rem; text-align: center; margin: 1.5rem 0 2.5rem; transition: color 0.3s ease; text-shadow: 0 2px 4px #e99e3c; position: relative; animation: slideDown 0.6s ease;">Login</h2>
+            <form id="authForm" style="animation: slideIn 0.6s ease; padding: 0 1.5rem; position: relative;">
+                <div style="margin-bottom: 2rem; animation: fadeInLeft 0.6s ease;">
+                    <label for="email" style="color: var(--text-color); font-size: 1.2rem; transition: color 0.3s ease; display: block; margin-bottom: 0.5rem;">Email:</label>
+                    <input type="email" id="email" required style="
+                        width: 100%;
+                        padding: 1rem;
+                        margin-top: 0.5rem;
+                        border: 2px solid rgba(200, 110, 40, 0.3);
+                        border-radius: 10px;
+                        background: rgba(255,255,255,0.15);
+                        color: var(--text-color);
+                        font-size: 1.1rem;
+                        transition: all 0.3s ease;
+                        backdrop-filter: blur(5px);
+                    ">
+                </div>
+                <div style="margin-bottom: 2.5rem;">
+                    <label for="password" style="color: var(--text-color); font-size: 1.2rem; transition: color 0.3s ease; display: block; margin-bottom: 0.5rem;">Password:</label>
+                    <input type="password" id="password" required style="
+                        width: 100%;
+                        padding: 1rem;
+                        margin-top: 0.5rem;
+                        border: 2px solid rgba(200, 110, 40, 0.3);
+                        border-radius: 10px;
+                        background: rgba(255,255,255,0.15);
+                        color: var(--text-color);
+                        font-size: 1.1rem;
+                        transition: all 0.3s ease;
+                        backdrop-filter: blur(5px);
+                    ">
+                </div>
+                <button type="submit" style="
+                        width: 100%;
+                        padding: 1.2rem;
+                        background: linear-gradient(45deg, var(--border-primary), var(--border-secondary));
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transform: scale(1);
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(200, 110, 40, 0.2);
+                        margin-bottom: 1.5rem;
+                    ">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // JavaScript code
+        const products = [{
+            id: 1,
+            name: 'Laptop',
+            price: 999.99,
+            image: 'https://i.ibb.co/RYjrFYS/L1.png',
+            category: 'Electronics',
+            rating: 4.5,
+            description: 'High-performance laptop with latest specifications'
+        }, {
+            id: 2,
+            name: 'Smartphone',
+            price: 499.99,
+            image: 'https://i.ibb.co/SXB9DgL/b1.png',
+            category: 'Electronics',
+            rating: 4.2,
+            description: 'Latest smartphone with advanced camera features'
+        }, {
+            id: 3,
+            name: 'Headphones',
+            price: 99.99,
+            image: 'https://i.ibb.co/9vF8z2Z/h1.png',
+            category: 'Audio',
+            rating: 4.0,
+            description: 'Wireless headphones with noise cancellation'
+        }, {
+            id: 4,
+            name: 'Tablet',
+            price: 299.99,
+            image: 'https://i.ibb.co/SDTpgNj/t1.png',
+            category: 'Electronics',
+            rating: 4.3,
+            description: 'Versatile tablet for work and entertainment'
+        }, {
+            id: 5,
+            name: 'Smart Watch',
+            price: 199.99,
+            image: 'https://www.gonoise.com/cdn/shop/products/1.6_44e4e36e-f762-4c89-b950-700aa320a935.png',
+            category: 'Wearables'
+        }, {
+            id: 6,
+            name: 'Wireless Earbuds',
+            price: 129.99,
+            image: 'https://i.ibb.co/WVhgrzD/e1.png',
+            category: 'Audio'
+        }];
+
+        let cart = [];
+        let isLoggedIn = false;
+        let orders = [];
+
+        // DOM Elements
+        const productsGrid = document.getElementById('productsGrid');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartCount = document.getElementById('cartCount');
+        const authModal = document.getElementById('authModal');
+        const authTitle = document.getElementById('authTitle');
+        const authForm = document.getElementById('authForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const profileBtn = document.getElementById('profileBtn');
+        const profileView = document.getElementById('profileView');
+        const orderHistoryBody = document.getElementById('orderHistoryBody');
+
+        // Load products
+        function loadProducts(productsToShow = products) {
+            productsGrid.innerHTML = '';
+            productsToShow.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.id = `product-${product.id}`;
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-card-content">
+                        <h3>${product.name}</h3>
+                        <p>$${product.price.toFixed(2)}</p>
+                        <div class="rating">
+                            <div class="stars">☆☆☆☆☆</div>
+                            <small>(0 reviews)</small>
+                        </div>
+                        <div class="product-actions">
+                            <button onclick="addToCart(${product.id})" class="btn-primary">Add to Cart</button>
+                            <button onclick="addToWishlist(${product.id})" class="btn-secondary">
+                                <span class="heart">♡</span>
+                            </button>
+                            <button onclick="showProductDetails(${product.id})" class="btn-info">Details</button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+                updateProductRatings(product.id);
+            });
+        }
+
+        // Cart functions
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.product.id === productId);
+            if (existingItem) {
+                existingItem.quantity++;
+                showToast(`Increased ${product.name} quantity`);
+            } else {
+                cart.push({
+                    product,
+                    quantity: 1
+                });
+                showToast(`Added ${product.name} to cart`);
+            }
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.product.id !== productId);
+            updateCart();
+        }
+
+        function updateCart() {
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.style.animation = 'fadeIn 0.3s ease-in';
+                itemElement.innerHTML = `
+                    <div>
+                        <h4 style="color: var(--text-color); font-size: 1.2rem; transition: color 0.3s">${item.product.name}</h4>
+                        <p style="color: var(--text-color); font-size: 1.1rem">$${item.product.price.toFixed(2)} x ${item.quantity}</p>
+                        <div class="quantity-controls" style="margin: 0.8rem 0">
+                            <button onclick="updateQuantity(${item.product.id}, -1)" 
+                                style="background: linear-gradient(45deg, var(--border-primary), var(--border-secondary); 
+                                color: white; 
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 4px;
+                                transition: transform 0.2s">-</button>
+                            <span style="font-size: 1.2rem; margin: 0 1rem">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.product.id}, 1)"
+                                style="background: linear-gradient(45deg, var(--border-primary), var(--border-secondary);
+                                color: white;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 4px;
+                                transition: transform 0.2s">+</button>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${item.product.id})"
+                        style="background: linear-gradient(45deg, var(--hover-color), var(--hover-color));
+                        color: white;
+                        border: none;
+                        padding: 0.8rem;
+                        border-radius: 6px;
+                        font-size: 1rem;
+                        transition: all 0.3s ease">Remove</button>
+                `;
+                cartItems.appendChild(itemElement);
+                total += item.product.price * item.quantity;
+            });
+            cartTotal.textContent = total.toFixed(2);
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Save cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // Auth functions
+        function showAuthModal(mode) {
+            authTitle.textContent = mode === 'login' ? 'Login' : 'Register';
+            authModal.style.display = 'block';
+        }
+
+        function closeAuthModal() {
+            authModal.style.display = 'none';
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            console.log(`${authTitle.textContent} with:`, email, password);
+            isLoggedIn = true;
+            updateAuthUI();
+            closeAuthModal();
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            cart = [];
+            updateCart();
+            updateAuthUI();
+            hideProfileView();
+        }
+
+        function updateAuthUI() {
+            loginBtn.style.display = isLoggedIn ? 'none' : 'inline-block';
+            registerBtn.style.display = isLoggedIn ? 'none' : 'inline-block';
+            logoutBtn.style.display = isLoggedIn ? 'inline-block' : 'none';
+            profileBtn.style.display = isLoggedIn ? 'inline-block' : 'none';
+        }
+
+        // Profile and Order History functions
+        function showProfileView() {
+            productsGrid.style.display = 'none';
+            profileView.style.display = 'block';
+            updateOrderHistory();
+        }
+
+        function hideProfileView() {
+            productsGrid.style.display = 'grid';
+            profileView.style.display = 'none';
+        }
+
+        function updateOrderHistory() {
+            orderHistoryBody.innerHTML = '';
+            orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.date}</td>
+                    <td>${order.items.map(item => `${item.product.name} x ${item.quantity}`).join(', ')}</td>
+                    <td>$${order.total.toFixed(2)}</td>
+                    <td>${order.shippingAddress}</td>
+                    <td>${order.paymentMethod}</td>
+                    <td>${order.paymentStatus || 'Completed'}</td>
+                `;
+                orderHistoryBody.appendChild(row);
+            });
+        }
+
+        function checkout() {
+            if (!isLoggedIn) {
+                showAuthModal('login');
+                return;
+            }
+
+            // Create shipping address and payment form modal
+            const addressModal = document.createElement('div');
+            addressModal.className = 'modal';
+            addressModal.style.display = 'block';
+            addressModal.innerHTML = `
+                <div class="modal-content" style="
+                    animation: fadeInScale 0.4s ease;
+                    width: min(90vw, 600px); 
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    margin: 2rem auto;
+                    padding: 2rem;
+                    border-radius: 15px;
+                    background: rgba(255, 255, 255, 0.95);
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                ">
+                    <span class="close" onclick="this.parentElement.parentElement.remove()" 
+                        style="position: absolute; right: 1.5rem; top: 1rem; font-size: 1.5rem; cursor: pointer;">&times;</span>
+                    <h2 style="text-align: center; margin-bottom: 2rem; color: var(--text-color);">Shipping Address & Payment</h2>
+                    <form id="addressForm" style="
+                        display: flex; 
+                        flex-direction: column; 
+                        gap: 1rem;
+                        width: 100%;
+                        max-width: 500px;
+                        margin: 0 auto;
+                    ">
+                        <input type="text" id="streetAddress" placeholder="Street Address" required 
+                            style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                            <input type="text" id="city" placeholder="City" required 
+                                style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                            <input type="text" id="state" placeholder="State" required 
+                                style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                            <input type="text" id="zipCode" placeholder="ZIP Code" required 
+                                style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                        </div>
+                        
+                        <h3 style="margin: 1rem 0 0.5rem; color: var(--text-color);">Payment Method</h3>
+                        <select id="paymentMethod" required 
+                            style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                            <option value="">Select Payment Method</option>
+                            <option value="credit">Credit Card</option>
+                            <option value="debit">Debit Card</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="upi">UPI</option>
+                            <option value="cod">Cash on Delivery</option>
+                        </select>
+
+                        <div id="cardDetails" style="display: none; gap: 1rem; flex-direction: column;">
+                            <input type="text" id="cardNumber" placeholder="Card Number" 
+                                style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <input type="text" id="expiryDate" placeholder="MM/YY" 
+                                    style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                                <input type="text" id="cvv" placeholder="CVV" 
+                                    style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                            </div>
+                        </div>
+
+                        <div id="upiDetails" style="display: none;">
+                            <input type="text" id="upiId" placeholder="Enter UPI ID" 
+                                style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(51, 218, 255, 0.3); background: rgba(255,255,255,0.9);">
+                        </div>
+
+                        <button type="submit" style="
+                            width: 100%;
+                            padding: 1.2rem;
+                            margin-top: 1rem;
+                            background: linear-gradient(45deg, var(--hover-color), var(--hover-color));
+                            color: white;
+                            border: none;
+                            border-radius: 10px;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: transform 0.2s ease;
+                            box-shadow: 0 4px 15px rgba(51, 218, 255, 0.2);
+                        ">
+                            Confirm Order
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(addressModal);
+
+            // Show/hide payment details based on selected method
+            const paymentMethod = document.getElementById('paymentMethod');
+            const cardDetails = document.getElementById('cardDetails');
+            const upiDetails = document.getElementById('upiDetails');
+
+            paymentMethod.addEventListener('change', (e) => {
+                cardDetails.style.display = ['credit', 'debit'].includes(e.target.value) ? 'block' : 'none';
+                upiDetails.style.display = e.target.value === 'upi' ? 'block' : 'none';
+            });
+
+            // Handle address form submission
+            document.getElementById('addressForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const streetAddress = document.getElementById('streetAddress').value;
+                const city = document.getElementById('city').value;
+                const state = document.getElementById('state').value;
+                const zipCode = document.getElementById('zipCode').value;
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                
+                const shippingAddress = `${streetAddress}, ${city}, ${state} ${zipCode}`;
+                
+                const newOrder = {
+                    id: orders.length + 1,
+                    date: new Date().toISOString().split('T')[0],
+                    items: [...cart],
+                    total: cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+                    shippingAddress: shippingAddress,
+                    paymentMethod: paymentMethod,
+                    paymentStatus: paymentMethod === 'cod' ? 'Pending' : 'Completed'
+                };
+                
+                orders.push(newOrder);
+                cart = [];
+                updateCart();
+                addressModal.remove();
+                showToast('Order placed successfully!', 'success');
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('cartBtn').addEventListener('click', () => cartSidebar.classList.add('active'));
+        document.getElementById('closeCartBtn').addEventListener('click', () => cartSidebar.classList.remove('active'));
+        loginBtn.addEventListener('click', () => showAuthModal('login'));
+        registerBtn.addEventListener('click', () => showAuthModal('register'));
+        logoutBtn.addEventListener('click', logout);
+        profileBtn.addEventListener('click', showProfileView);
+        document.getElementById('closeProfileBtn').addEventListener('click', hideProfileView);
+        authForm.addEventListener('submit', handleAuth);
+        document.querySelector('.close').addEventListener('click', closeAuthModal);
+        document.getElementById('checkoutBtn').addEventListener('click', checkout);
+
+        // Add these new functions and improvements
+
+        // Product search and filtering
+        function addSearchAndFilter() {
+            const searchHTML = `
+                <div class="search-container" style="margin-bottom: 20px; animation: fadeIn 0.5s ease-in;">
+                    <input type="text" id="searchInput" placeholder="Search products..." 
+                        style="padding: 14px 24px;
+                        font-size: 18px;
+                        border: 2px solid rgba(0, 0, 0, 0.5);
+                        border-radius: 30px;
+                        width: 350px;
+                        background: rgba(255, 255, 255, 0.2);
+                        color: var(--text-color);
+                        transition: all 0.3s ease;">
+                    <select id="sortSelect" 
+                        style="padding: 14px 24px;
+                        font-size: 18px;
+                        border: 2px solid rgba(0, 0, 0, 0.5);
+                        border-radius: 30px;
+                        margin-left: 10px;
+                        background: rgba(255, 255, 255, 0.2);
+                        color: var(--text-color);
+                        cursor: pointer;
+                        transition: all 0.3s ease;">
+                        <option value="">Sort by...</option>
+                        <option value="priceLow">Price: Low to High</option>
+                        <option value="priceHigh">Price: High to Low</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+            `;
+            productsGrid.insertAdjacentHTML('beforebegin', searchHTML);
+
+            // Add event listeners and hover effects
+            const searchInput = document.getElementById('searchInput');
+            const sortSelect = document.getElementById('sortSelect');
+
+            searchInput.addEventListener('input', filterProducts);
+            sortSelect.addEventListener('change', filterProducts);
+
+            searchInput.addEventListener('focus', () => {
+                searchInput.style.transform = 'scale(1.02)';
+                searchInput.style.boxShadow = '0 0 15px var(--primary-color)';
+            });
+
+            searchInput.addEventListener('blur', () => {
+                searchInput.style.transform = 'scale(1)';
+                searchInput.style.boxShadow = 'none';
+            });
+
+            sortSelect.addEventListener('mouseover', () => {
+                sortSelect.style.transform = 'scale(1.02)';
+                sortSelect.style.boxShadow = '0 0 15px var(--secondary-color)';
+            });
+
+            sortSelect.addEventListener('mouseout', () => {
+                sortSelect.style.transform = 'scale(1)';
+                sortSelect.style.boxShadow = 'none';
+            });
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sortValue = document.getElementById('sortSelect').value;
+            
+            let filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm)
+            );
+
+            // Sort products with smooth animation
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.style.opacity = '0';
+            productsGrid.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                switch(sortValue) {
+                    case 'priceLow':
+                        filteredProducts.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'priceHigh':
+                        filteredProducts.sort((a, b) => b.price - a.price);
+                        break;
+                    case 'name':
+                        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                }
+
+                loadProducts(filteredProducts);
+                productsGrid.style.opacity = '1';
+                productsGrid.style.transform = 'translateY(0)';
+            }, 300);
+        }
+
+        // Improve cart functionality
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.product.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCart();
+                }
+            }
+        }
+
+        // Add localStorage support
+        function initializeCart() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCart();
+            }
+        }
+
+        // Add toast notifications
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Wishlist functionality
+        let wishlist = [];
+
+        function addToWishlist(productId) {
+            if (!isLoggedIn) {
+                showToast('Please login to add items to wishlist', 'warning');
+                return;
+            }
+            
+            const product = products.find(p => p.id === productId);
+            if (!wishlist.some(item => item.id === productId)) {
+                wishlist.push(product);
+                showToast(`Added ${product.name} to wishlist`, 'info');
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                updateWishlistUI();
+            }
+        }
+
+        function removeFromWishlist(productId) {
+            wishlist = wishlist.filter(item => item.id !== productId);
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+            updateWishlistUI();
+            showToast('Removed from wishlist', 'info');
+        }
+
+        function updateWishlistUI() {
+            const wishlistContainer = document.getElementById('wishlistItems');
+            if (wishlistContainer) {
+                wishlistContainer.innerHTML = '';
+                wishlist.forEach(product => {
+                    const item = document.createElement('div');
+                    item.className = 'wishlist-item';
+                    item.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" style="width: 60px; height: 60px; transition: transform 0.3s ease;">
+                        <div>
+                            <h4 style="color: var(--text-color); font-size: 1.2rem; transition: color 0.3s ease;">${product.name}</h4>
+                            <p style="color: var(--text-color); font-size: 1.1rem; transition: color 0.3s ease;">$${product.price.toFixed(2)}</p>
+                        </div>
+                        <div>
+                            <button onclick="addToCart(${product.id})" class="btn-primary" style="transform: scale(1); transition: transform 0.3s ease, background 0.3s ease; background: linear-gradient(45deg, var(--border-primary), var(--border-secondary);">Add to Cart</button>
+                            <button onclick="removeFromWishlist(${product.id})" class="btn-danger" style="transform: scale(1); transition: transform 0.3s ease, background 0.3s ease; background: linear-gradient(45deg, var(--hover-color), var(--hover-color);">Remove</button>
+                        </div>
+                    `;
+                    wishlistContainer.appendChild(item);
+                });
+            }
+        }
+
+        // Product rating and review system
+        function addRating(productId, rating, review) {
+            if (!isLoggedIn) {
+                showToast('Please login to add a review', 'warning');
+                return;
+            }
+
+            const product = products.find(p => p.id === productId);
+            if (!product.ratings) product.ratings = [];
+            
+            product.ratings.push({
+                userId: 'current-user', // In a real app, use actual user ID
+                rating,
+                review,
+                date: new Date().toISOString()
+            });
+
+            updateProductRatings(productId);
+            showToast('Review added successfully', 'success');
+        }
+
+        function updateProductRatings(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product.ratings) return;
+
+            const avgRating = product.ratings.reduce((sum, r) => sum + r.rating, 0) / product.ratings.length;
+            const ratingElement = document.querySelector(`#product-${productId} .rating`);
+            if (ratingElement) {
+                ratingElement.innerHTML = `
+                    <div class="stars" style="color: var(--text-color); font-size: 1.2rem; transition: color 0.3s ease;">
+                        ${'★'.repeat(Math.round(avgRating))}${'☆'.repeat(5 - Math.round(avgRating))}
+                    </div>
+                    <small style="color: var(--text-color); transition: color 0.3s ease;">(${product.ratings.length} reviews)</small>
+                `;
+            }
+        }
+
+        // Product details modal
+        function showProductDetails(productId) {
+            const product = products.find(p => p.id === productId);
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content product-details" style="animation: fadeInScale 0.4s ease; background: linear-gradient(135deg, var(--border-primary), var(--border-secondary));">
+                    <span class="close" onclick="this.parentElement.parentElement.remove()" style="color: var(--text-color); font-size: 1.5rem; transition: color 0.3s ease;">&times;</span>
+                    <div class="product-details-content">
+                        <img src="${product.image}" alt="${product.name}" style="transform: scale(1); transition: transform 0.4s ease; border: 2px solid #33daff00;">
+                        <div class="details">
+                            <h2 style="color: var(--text-color); font-size: 1.8rem; transition: color 0.3s ease;">${product.name}</h2>
+                            <p class="price" style="color: var(--text-color); font-size: 1.4rem; transition: color 0.3s ease;">$${product.price.toFixed(2)}</p>
+                            <div class="rating"></div>
+                            <div class="reviews" style="animation: slideIn 0.5s ease;">
+                                ${product.ratings ? product.ratings.map(r => `
+                                    <div class="review" style="transform: translateY(0); transition: transform 0.3s ease; background: rgba(224, 242, 241, 0.8); border-radius: 10px; padding: 10px; margin: 5px 0;">
+                                        <div class="stars" style="color: var(--text-color); font-size: 1.2rem;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+                                        <p style="color: var(--text-color);">${r.review}</p>
+                                        <small style="color: var(--text-color);">${new Date(r.date).toLocaleDateString()}</small>
+                                    </div>
+                                `).join('') : 'No reviews yet'}
+                            </div>
+                            ${isLoggedIn ? `
+                                <form onsubmit="event.preventDefault(); addRating(${product.id}, 
+                                    parseInt(this.rating.value), this.review.value)" style="animation: fadeIn 0.5s ease;">
+                                    <select name="rating" required style="background: linear-gradient(45deg, var(--border-primary), var(--border-secondary)); color: var(--text-color); transition: transform 0.3s ease; border: none; border-radius: 5px; padding: 8px;">
+                                        <option value="">Select Rating</option>
+                                        ${[1,2,3,4,5].map(n => `<option value="${n}">${'★'.repeat(n)}</option>`)}
+                                    </select>
+                                    <textarea name="review" placeholder="Write your review..." required style="border: 2px solid #80deea00; border-radius: 5px; transition: border-color 0.3s ease; margin: 10px 0; padding: 8px;"></textarea>
+                                    <button type="submit" style="background: linear-gradient(45deg, var(--border-primary), var(--border-secondary)); color: white; transform: scale(1); transition: transform 0.3s ease, background 0.3s ease; border: none; border-radius: 5px; padding: 10px 20px;">Submit Review</button>
+                                </form>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Initialize wishlist on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            updateAuthUI();
+            initializeCart();
+            addSearchAndFilter();
+            const savedWishlist = localStorage.getItem('wishlist');
+            if (savedWishlist) {
+                wishlist = JSON.parse(savedWishlist);
+                updateWishlistUI();
+            }
+        });
+    </script>
+</body>
+
+</html>
